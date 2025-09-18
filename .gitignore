@@ -1,0 +1,34 @@
+# Build outputs
+**/bin/
+**/obj/
+
+# VS/VSCode
+.vs/
+*.user
+*.suo
+*.userprefs
+.vscode/
+!.vscode/extensions.json
+
+# NuGet
+*.nupkg
+packages/
+
+# Logs / temp
+*.log
+*.tmp
+*.temp
+
+# EF Core (designer files are generated)
+**/Migrations/*Designer.cs
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local DB files
+MovieRatings.Console/movieratings.db
+MovieRatings.Console/movieratings.db-*
+
+# Tooling
+*.ide*
