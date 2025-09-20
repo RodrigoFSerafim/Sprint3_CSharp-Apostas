@@ -79,4 +79,71 @@ bettingtracker.db               # Banco de dados SQLite (gerado em runtime)
 - Valor apostado deve ser maior que zero
 - Resultado deve ser: Ganhou, Perdeu ou Pendente
 - Descrição é opcional (até 1000 caracteres)
+
 ---
+## Arquitetura em Camadas
+flowchart TD:
+
+- A[Console / Program.cs] --> B[Domínio / Models]
+- B --> C[Repositórios / Repository]
+- C --> D[(Banco SQLite)]
+- C --> E[DbContext (EF Core)]
+
+---
+## Diagrama de Classes (simplificado)
+```
+classDiagram
+    class Aposta {
+        int Id
+        string NomeCasaAposta
+        decimal ValorApostado
+        ResultadoAposta Resultado
+        string Descricao
+        +Validar()
+    }
+
+    class ApostaRepository {
+        +Listar() IEnumerable<Aposta>
+        +ObterPorId(int id) Aposta
+        +Adicionar(Aposta aposta)
+        +Atualizar(Aposta aposta)
+        +Remover(int id)
+    }
+
+    class ContextoDados {
+        DbSet<Aposta> Apostas
+        +SaveChanges()
+    }
+
+    class Program {
+        +Main()
+        +MostrarMenu()
+        +ExecutarOpcao(int opcao)
+    }
+
+    ApostaRepository --> ContextoDados
+    Program --> ApostaRepository
+    Program --> Aposta
+```
+
+---
+
+## Diagrama de Sequência
+```
+sequenceDiagram
+    participant U as Usuário
+    participant P as Program (Console)
+    participant R as ApostaRepository
+    participant D as DbContext/SQLite
+
+    U->>P: Seleciona "Adicionar Aposta"
+    P->>U: Solicita dados (casa, valor, resultado, descrição)
+    U->>P: Informa dados
+    P->>P: Cria objeto Aposta
+    P->>R: Adicionar(aposta)
+    R->>D: INSERT na tabela Apostas
+    D-->>R: Confirmação
+    R-->>P: Sucesso
+    P->>U: "Aposta adicionada com sucesso"
+```
+
